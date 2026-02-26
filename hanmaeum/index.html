@@ -276,7 +276,7 @@
       display: inline-block; background: var(--light-green); color: #fff;
       font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 100px;
     }
-    .tl-bars { display: flex; align-items: flex-end; gap: 10px; height: 180px; }
+    .tl-bars { display: flex; align-items: flex-end; gap: 10px; }
     .tl-col { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; height: 100%; justify-content: flex-end; }
     .tl-amt { font-size: 11px; font-weight: 700; color: var(--sky-dark); }
     .tl-bar { width: 100%; border-radius: 6px 6px 0 0; background: var(--sky-mid); min-height: 16px; transition: height 1s; }
@@ -648,7 +648,7 @@
 
     <div class="stats-5 fu d1">
       <div class="stat-card">
-        <div class="stat-num"><span class="cnt" data-target="2009">0</span></div>
+        <div class="stat-num"><span class="cnt" data-target="2009" data-no-comma>0</span></div>
         <div class="stat-lbl">설립연도 · 사업개시</div>
       </div>
       <div class="stat-card">
@@ -700,7 +700,7 @@
         </div>
         <div class="tl-col">
           <div class="tl-amt" style="color:#0369A1;font-weight:800;font-size:13px;">700억</div>
-          <div class="tl-bar hi" style="height:168px;"></div>
+          <div class="tl-bar hi" style="height:242px;"></div>
           <div class="tl-yr hi">2024</div>
         </div>
       </div>
@@ -983,7 +983,7 @@
     let cur = 0;
     const t = setInterval(() => {
       cur = Math.min(cur + step, target);
-      el.textContent = Math.floor(cur).toLocaleString();
+      el.textContent = el.hasAttribute('data-no-comma') ? Math.floor(cur).toString() : Math.floor(cur).toLocaleString();
       if (cur >= target) clearInterval(t);
     }, 16);
   }
