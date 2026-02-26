@@ -925,15 +925,36 @@
 
 
 <script>
-  // ── 페이지 최상단 고정 (iframe autofocus 스크롤 방지) ──
+  // ── 페이지 최상단 고정 (MS Forms iframe autofocus 스크롤 방지) ──
+  history.scrollRestoration = 'manual';
+
   if (!location.hash) {
-    // DOMContentLoaded 시점
+    let userHasScrolled = false;
+
+    // 사용자가 직접 스크롤하면 잠금 해제
+    ['wheel', 'touchmove'].forEach(evt =>
+      window.addEventListener(evt, () => { userHasScrolled = true; }, { once: true, passive: true })
+    );
+    window.addEventListener('keydown', e => {
+      if ([' ', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(e.key))
+        userHasScrolled = true;
+    }, { once: true });
+
     window.scrollTo(0, 0);
-    // 이미지·iframe 로드 완료 시점
     window.addEventListener('load', () => window.scrollTo(0, 0));
-    // lazy iframe이 뒤늦게 포커스를 가져갈 경우 대비
-    setTimeout(() => window.scrollTo(0, 0), 300);
-    setTimeout(() => window.scrollTo(0, 0), 800);
+
+    // iframe 로드 완료 후 자동 포커스로 인한 스크롤 차단
+    const formIframe = document.querySelector('#contact iframe');
+    if (formIframe) {
+      formIframe.addEventListener('load', () => {
+        if (!userHasScrolled) {
+          window.scrollTo(0, 0);
+          const onScroll = () => { if (!userHasScrolled) window.scrollTo(0, 0); };
+          window.addEventListener('scroll', onScroll, { passive: true });
+          setTimeout(() => window.removeEventListener('scroll', onScroll), 800);
+        }
+      });
+    }
   }
 
   // ── Header scroll shadow ──
